@@ -12,6 +12,7 @@ const ipc = electron.ipcMain;
 const nativeImage = electron.nativeImage;
 const fs = require('fs');
 const path = require('path');
+const GhReleases = require('electron-gh-releases')
 
 var settings = require('./common/settings');
 var certificateStore = require('./main/certificateStore').load(path.resolve(app.getPath('userData'), 'certificate.json'));
@@ -19,6 +20,29 @@ var appMenu = require('./main/menus/app');
 const allowProtocolDialog = require('./main/allowProtocolDialog');
 
 var argv = require('yargs').argv;
+
+let options = {
+  repo: 'razzeee/desktop',
+  currentVersion: app.getVersion()
+}
+
+const updater = new GhReleases(options)
+
+// Check for updates
+// `status` returns true if there is a new update available
+updater.check((err, status) => {
+  if (!err && status) {
+    // Download the update
+    updater.download()
+  }
+})
+
+// When an update has been downloaded
+updater.on('update-downloaded', (info) => {
+  // Restart the app and install the update
+  updater.install()
+})
+
 
 var client = null;
 if (argv.livereload) {

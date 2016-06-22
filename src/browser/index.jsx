@@ -462,12 +462,6 @@ if (config.teams.length === 0) {
   window.location = 'settings.html';
 }
 
-var contextMenu = require('./menus/context');
-var menu = contextMenu.createDefault();
-window.addEventListener('contextmenu', function(e) {
-  menu.popup(remote.getCurrentWindow());
-}, false);
-
 var showUnreadBadgeWindows = function(unreadCount, mentionCount) {
   const badge = require('./js/badge');
   const sendBadge = function(dataURL, description) {

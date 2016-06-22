@@ -26,6 +26,7 @@ if (process.platform === 'win32') {
 }
 
 require('electron-squirrel-startup');
+require('electron-context-menu');
 
 const fs = require('fs');
 const path = require('path');

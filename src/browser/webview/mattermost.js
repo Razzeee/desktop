@@ -2,7 +2,7 @@
 
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
-const notification = require('../js/notification');
+require('electron-notification-shim')();
 
 var hasClass = function(element, className) {
   var rclass = /[\t\r\n\f]/g;
@@ -97,23 +97,3 @@ function isElementVisible(elem) {
   return elem.offsetHeight !== 0;
 }
 
-notification.override({
-  // Send a notification event to the main process.
-  notification: function(title, options) {
-    ipc.send('notified', {
-      title: title,
-      options: options
-    });
-  },
-  // Show window even if it is hidden/minimized when notification is clicked.
-  onclick: function() {
-    if (process.platform === 'win32') {
-      // show() breaks Aero Snap state.
-      electron.remote.getCurrentWindow().focus();
-    }
-    else {
-      electron.remote.getCurrentWindow().show();
-    }
-    ipc.sendToHost('onNotificationClick');
-  }
-});

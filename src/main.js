@@ -276,21 +276,15 @@ app.on('ready', function() {
 
       mainWindow.focus();
     });
-    ipcMain.on('notified', function(event, arg) {
-      if (process.platform === 'win32') {
-        if (config.notifications.flashWindow === 2) {
-          mainWindow.flashFrame(true);
-        }
-        // On Windows 8.1 and Windows 8, a shortcut with a Application User Model ID must be installed to the Start screen.
-        // In current version, use tray balloon for notification
-        if (osVersion.isLowerThanOrEqualWindows8_1()) {
-          trayIcon.displayBalloon({
-            icon: path.resolve(__dirname, 'resources/appicon.png'),
-            title: arg.title,
-            content: arg.options.body
-          });
-        }
-      }
+    ipcMain.on('notification-shim', (e, msg) => {
+        console.log(`Title: ${msg.title}, Content: ${msg.options.body}`);
+        const notifier = require('node-notifier');
+
+        // Object
+        notifier.notify({
+          'title': 'My notification',
+          'message': 'Hello, there!'
+        });
     });
 
     // Set overlay icon from dataURL

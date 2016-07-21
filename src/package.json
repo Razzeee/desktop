@@ -15,6 +15,8 @@
   "dependencies": {
     "auto-launch": "^2.0.1",
     "bootstrap": "^3.3.6",
+    "electron-notification-shim": "^1.1.0",
+    "node-notifier": "^4.6.0",
     "electron-squirrel-startup": "^1.0.0",
     "os-locale": "^1.4.0",
     "react": "^15.0.1",

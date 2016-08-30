@@ -5,7 +5,7 @@ const ipc = electron.ipcRenderer;
 const notification = require('../js/notification');
 
 window.eval = global.eval = function() {
-  throw new Error("Sorry, Mattermost does not support window.eval() for security reasons.");
+  throw new Error('Sorry, Mattermost does not support window.eval() for security reasons.');
 };
 
 var hasClass = function(element, className) {
@@ -27,6 +27,7 @@ setInterval(function() {
   // unreadCount in sidebar
   // Note: the active channel doesn't have '.unread-title'.
   var unreadCount = document.getElementsByClassName('unread-title').length;
+
   // mentionCount in sidebar
   var elem = document.getElementsByClassName('badge');
   var mentionCount = 0;
@@ -58,6 +59,7 @@ setInterval(function() {
     if (post === null) {
       return;
     }
+
     // find latest post and save.
     while (post = post.nextSibling) {
       if (post.nextSibling === null) {
@@ -102,15 +104,17 @@ function isElementVisible(elem) {
 }
 
 notification.override({
+
   // Send a notification event to the main process.
-  notification: function(title, options) {
+  notification(title, options) {
     ipc.send('notified', {
-      title: title,
-      options: options
+      title,
+      options
     });
   },
+
   // Show window even if it is hidden/minimized when notification is clicked.
-  onclick: function() {
+  onclick() {
     const currentWindow = electron.remote.getCurrentWindow();
     if (process.platform === 'win32') {
       // show() breaks Aero Snap state.
@@ -136,17 +140,17 @@ notification.override({
 
 // get the last of href for the current channel in the sidebar.
 function getCurrentChannelString() {
-  const active_channel_link = document.querySelector('.active a.sidebar-channel');
-  const url_elements = active_channel_link.href.split('/');
-  return url_elements[url_elements.length - 1];
+  const activeChannelLink = document.querySelector('.active a.sidebar-channel');
+  const urlElements = activeChannelLink.href.split('/');
+  return urlElements[urlElements.length - 1];
 }
 
 ipc.on('activate-search-box', (event) => {
-  const search_boxes = document.getElementsByClassName('search-bar'); // should use id
-  if (search_boxes.length === 0) {
+  const searchBoxes = document.getElementsByClassName('search-bar'); // should use id
+  if (searchBoxes.length === 0) {
     return;
   }
-  const search_box = search_boxes[0];
-  search_box.focus();
-  search_box.value = `in:${getCurrentChannelString()} `;
+  const searchBox = searchBoxes[0];
+  searchBox.focus();
+  searchBox.value = `in:${getCurrentChannelString()} `;
 });

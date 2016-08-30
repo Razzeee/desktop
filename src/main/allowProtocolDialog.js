@@ -46,6 +46,7 @@ function initDialogEvent(mainWindow) {
           fs.writeFile(allowedProtocolFile, JSON.stringify(allowedProtocols), (err) => {
             if (err) console.error(err);
           });
+
           // fallthrough
         case 0:
           shell.openExternal(URL);
@@ -58,5 +59,5 @@ function initDialogEvent(mainWindow) {
 }
 
 module.exports = {
-  init: init
+  init
 };

@@ -21,7 +21,7 @@ function override(eventHandlers) {
   };
 
   // static properties
-  Notification.__defineGetter__('permission', function() {
+  Notification.__defineGetter__('permission', () => {
     return OriginalNotification.permission;
   });
 
@@ -52,8 +52,8 @@ function override(eventHandlers) {
     defineReadProperty(event);
     Notification.prototype.__defineSetter__(event, function(originalCallback) {
       this.notification[event] = function() {
-        callbackevent = {
-          preventDefault: function() {
+        var callbackevent = {
+          preventDefault() {
             this.isPrevented = true;
           }
         };
@@ -88,5 +88,5 @@ function override(eventHandlers) {
 }
 
 module.exports = {
-  override: override
+  override
 };

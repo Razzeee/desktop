@@ -51,5 +51,5 @@ function showOrRestore(window) {
 }
 
 module.exports = {
-  createMenu: createMenu
+  createMenu
 };

@@ -56,7 +56,7 @@ CertificateStore.prototype.isTrusted = function(targetURL, certificate) {
 };
 
 module.exports = {
-  load: function(storeFile) {
+  load(storeFile) {
     return new CertificateStore(storeFile);
   }
 };

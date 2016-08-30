@@ -26,6 +26,7 @@ function getInstallerConfig(arch) {
     authors: 'Mattermost, Inc.',
     owners: 'Mattermost, Inc.',
     iconUrl: 'https://raw.githubusercontent.com/mattermost/desktop/master/resources/icon.ico',
+
     //loadingGif: path.join(rootPath, 'assets', 'img', 'loading.gif'),
     noMsi: true,
     outputDirectory: path.join(outPath, `windows-installer-${arch}`),

@@ -9,21 +9,21 @@ var createDataURL = function(text) {
   const ctx = canvas.getContext('2d');
 
   // circle
-  ctx.fillStyle = "#FF1744"; // Material Red A400
+  ctx.fillStyle = '#FF1744'; // Material Red A400
   ctx.beginPath();
   ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
   ctx.fill();
 
   // text
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = '#ffffff'
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = (11 * scale) + "px sans-serif";
+  ctx.font = (11 * scale) + 'px sans-serif';
   ctx.fillText(text, size / 2, size / 2, size);
 
   return canvas.toDataURL();
 };
 
 module.exports = {
-  createDataURL: createDataURL
+  createDataURL
 };

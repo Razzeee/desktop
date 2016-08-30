@@ -1,10 +1,10 @@
 'use strict';
 
 window.eval = global.eval = function() {
-  throw new Error("Sorry, Mattermost does not support window.eval() for security reasons.");
+  throw new Error('Sorry, Mattermost does not support window.eval() for security reasons.');
 }
 
-const {remote, ipcRenderer} = require('electron');
+const { remote, ipcRenderer } = require('electron');
 const settings = require('../common/settings');
 
 const React = require('react');
@@ -30,7 +30,7 @@ function backToIndex() {
 }
 
 var SettingsPage = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     var initialState;
     try {
       initialState = settings.readFileSync(this.props.configFile);
@@ -43,7 +43,7 @@ var SettingsPage = React.createClass({
 
     return initialState;
   },
-  componentDidMount: function() {
+  componentDidMount() {
     if (process.platform === 'win32' || process.platform === 'linux') {
       var self = this;
       appLauncher.isEnabled().then(function(enabled) {
@@ -53,13 +53,13 @@ var SettingsPage = React.createClass({
       });
     }
   },
-  handleTeamsChange: function(teams) {
+  handleTeamsChange(teams) {
     this.setState({
       showAddTeamForm: false,
-      teams: teams
+      teams
     });
   },
-  handleSave: function() {
+  handleSave() {
     var config = {
       teams: this.state.teams,
       hideMenuBar: this.state.hideMenuBar,
@@ -95,20 +95,20 @@ var SettingsPage = React.createClass({
 
     backToIndex();
   },
-  handleCancel: function() {
+  handleCancel() {
     backToIndex();
   },
-  handleChangeDisableWebSecurity: function() {
+  handleChangeDisableWebSecurity() {
     this.setState({
       disablewebsecurity: this.refs.disablewebsecurity.getChecked()
     });
   },
-  handleChangeHideMenuBar: function() {
+  handleChangeHideMenuBar() {
     this.setState({
       hideMenuBar: this.refs.hideMenuBar.getChecked()
     });
   },
-  handleChangeShowTrayIcon: function() {
+  handleChangeShowTrayIcon() {
     var shouldShowTrayIcon = this.refs.showTrayIcon.getChecked();
     this.setState({
       showTrayIcon: shouldShowTrayIcon
@@ -120,17 +120,17 @@ var SettingsPage = React.createClass({
       });
     }
   },
-  handleChangeTrayIconTheme: function() {
+  handleChangeTrayIconTheme() {
     this.setState({
       trayIconTheme: this.refs.trayIconTheme.getValue()
     });
   },
-  handleChangeAutoStart: function() {
+  handleChangeAutoStart() {
     this.setState({
       autostart: this.refs.autostart.getChecked()
     });
   },
-  handleChangeMinimizeToTray: function() {
+  handleChangeMinimizeToTray() {
     var shouldMinimizeToTray = (process.platform !== 'darwin' || this.refs.showTrayIcon.getChecked())
     && this.refs.minimizeToTray.getChecked();
 
@@ -138,73 +138,79 @@ var SettingsPage = React.createClass({
       minimizeToTray: shouldMinimizeToTray
     });
   },
-  handleChangeToggleWindowOnTrayIconClick: function() {
+  handleChangeToggleWindowOnTrayIconClick() {
     this.setState({
       toggleWindowOnTrayIconClick: this.refs.toggleWindowOnTrayIconClick.getChecked()
     });
   },
-  toggleShowTeamForm: function() {
+  toggleShowTeamForm() {
     this.setState({
       showAddTeamForm: !this.state.showAddTeamForm
     });
   },
-  handleFlashWindowSetting: function(item) {
+  handleFlashWindowSetting(item) {
     this.setState({
       notifications: {
         flashWindow: item.state
       }
     });
   },
-  handleShowUnreadBadge: function() {
+  handleShowUnreadBadge() {
     this.setState({
       showUnreadBadge: this.refs.showUnreadBadge.getChecked()
     });
   },
-  render: function() {
+  render() {
     var teams_row = (
     <Row>
       <Col md={ 12 }>
-      <TeamList teams={ this.state.teams } showAddTeamForm={ this.state.showAddTeamForm } onTeamsChange={ this.handleTeamsChange } />
+      <TeamList teams={ this.state.teams } showAddTeamForm={ this.state.showAddTeamForm } onTeamsChange={ this.handleTeamsChange }/>
       </Col>
     </Row>
     );
 
     var options = [];
     if (process.platform === 'win32' || process.platform === 'linux') {
-      options.push(<Input key="inputHideMenuBar" id="inputHideMenuBar" ref="hideMenuBar" type="checkbox" label="Hide menu bar (Press Alt to show menu bar)" checked={ this.state.hideMenuBar }
-                     onChange={ this.handleChangeHideMenuBar } />);
+      options.push(<Input key='inputHideMenuBar' id='inputHideMenuBar' ref='hideMenuBar' type='checkbox' label='Hide menu bar (Press Alt to show menu bar)' checked={ this.state.hideMenuBar }
+        onChange={ this.handleChangeHideMenuBar }
+                   />);
     }
     if (process.platform === 'darwin' || process.platform === 'linux') {
-      options.push(<Input key="inputShowTrayIcon" id="inputShowTrayIcon" ref="showTrayIcon" type="checkbox" label="Show icon on menu bar (Need to restart the application)" checked={ this.state.showTrayIcon }
-                     onChange={ this.handleChangeShowTrayIcon } />);
+      options.push(<Input key='inputShowTrayIcon' id='inputShowTrayIcon' ref='showTrayIcon' type='checkbox' label='Show icon on menu bar (Need to restart the application)' checked={ this.state.showTrayIcon }
+        onChange={ this.handleChangeShowTrayIcon }
+                   />);
     }
     if (process.platform === 'linux') {
-      options.push(<Input key="inputTrayIconTheme" ref="trayIconTheme" type="select" label="Icon theme (Need to restart the application)" value={ this.state.trayIconTheme } onChange={ this.handleChangeTrayIconTheme }>
-                   <option value="light">Light</option>
-                   <option value="dark">Dark</option>
+      options.push(<Input key='inputTrayIconTheme' ref='trayIconTheme' type='select' label='Icon theme (Need to restart the application)' value={ this.state.trayIconTheme } onChange={ this.handleChangeTrayIconTheme }>
+                   <option value='light'>Light</option>
+                   <option value='dark'>Dark</option>
                    </Input>);
     }
-    options.push(<Input key="inputDisableWebSecurity" id="inputDisableWebSecurity" ref="disablewebsecurity" type="checkbox" label="Allow mixed content (Enabling allows both secure and insecure content, images and scripts to render and execute. Disabling allows only secure content.)"
-                   checked={ this.state.disablewebsecurity } onChange={ this.handleChangeDisableWebSecurity } />);
+    options.push(<Input key='inputDisableWebSecurity' id='inputDisableWebSecurity' ref='disablewebsecurity' type='checkbox' label='Allow mixed content (Enabling allows both secure and insecure content, images and scripts to render and execute. Disabling allows only secure content.)'
+      checked={ this.state.disablewebsecurity } onChange={ this.handleChangeDisableWebSecurity }
+                 />);
+
     //OSX has an option in the Dock, to set the app to autostart, so we choose to not support this option for OSX
     if (process.platform === 'win32' || process.platform === 'linux') {
-      options.push(<Input key="inputAutoStart" id="inputAutoStart" ref="autostart" type="checkbox" label="Start app on login." checked={ this.state.autostart } onChange={ this.handleChangeAutoStart }
+      options.push(<Input key='inputAutoStart' id='inputAutoStart' ref='autostart' type='checkbox' label='Start app on login.' checked={ this.state.autostart } onChange={ this.handleChangeAutoStart }/>);
+    }
+
+    if (process.platform === 'darwin' || process.platform === 'linux') {
+      options.push(<Input key='inputMinimizeToTray' id='inputMinimizeToTray' ref='minimizeToTray' type='checkbox' label={ this.state.trayWasVisible || !this.state.showTrayIcon ? 'Leave app running in notification area when the window is closed' : 'Leave app running in notification area when the window is closed (available on next restart)' } disabled={ !this.state.showTrayIcon || !this.state.trayWasVisible } checked={ this.state.minimizeToTray }
+        onChange={ this.handleChangeMinimizeToTray }
                    />);
     }
 
-    if (process.platform === 'darwin' || process.platform === 'linux') {
-      options.push(<Input key="inputMinimizeToTray" id="inputMinimizeToTray" ref="minimizeToTray" type="checkbox" label={ this.state.trayWasVisible || !this.state.showTrayIcon ? "Leave app running in notification area when the window is closed" : "Leave app running in notification area when the window is closed (available on next restart)" } disabled={ !this.state.showTrayIcon || !this.state.trayWasVisible } checked={ this.state.minimizeToTray }
-                     onChange={ this.handleChangeMinimizeToTray } />);
-    }
-
     if (process.platform === 'win32') {
-      options.push(<Input key="inputToggleWindowOnTrayIconClick" id="inputToggleWindowOnTrayIconClick" ref="toggleWindowOnTrayIconClick" type="checkbox" label="Toggle window visibility when clicking on the tray icon."
-                     checked={ this.state.toggleWindowOnTrayIconClick } onChange={ this.handleChangeToggleWindowOnTrayIconClick } />);
+      options.push(<Input key='inputToggleWindowOnTrayIconClick' id='inputToggleWindowOnTrayIconClick' ref='toggleWindowOnTrayIconClick' type='checkbox' label='Toggle window visibility when clicking on the tray icon.'
+        checked={ this.state.toggleWindowOnTrayIconClick } onChange={ this.handleChangeToggleWindowOnTrayIconClick }
+                   />);
     }
 
     if (process.platform === 'darwin' || process.platform === 'win32') {
-      options.push(<Input key="inputShowUnreadBadge" id="inputShowUnreadBadge" ref="showUnreadBadge" type="checkbox" label="Show red badge on taskbar icon to indicate unread messages. Regardless of this setting, mentions are always indicated with a red badge and item count on the taskbar icon."
-                     checked={ this.state.showUnreadBadge } onChange={ this.handleShowUnreadBadge } />);
+      options.push(<Input key='inputShowUnreadBadge' id='inputShowUnreadBadge' ref='showUnreadBadge' type='checkbox' label='Show red badge on taskbar icon to indicate unread messages. Regardless of this setting, mentions are always indicated with a red badge and item count on the taskbar icon.'
+        checked={ this.state.showUnreadBadge } onChange={ this.handleShowUnreadBadge }
+                   />);
     }
 
     var options_row = (options.length > 0) ? (
@@ -223,6 +229,7 @@ var SettingsPage = React.createClass({
           label: 'Never',
           state: 0
         },
+
         /* ToDo: Idle isn't implemented yet
         {
           label: 'Only when idle (after 10 seconds)',
@@ -238,13 +245,14 @@ var SettingsPage = React.createClass({
       var notificationElements = notificationSettings.map(function(item) {
         var boundClick = that.handleFlashWindowSetting.bind(that, item);
         return (
-          <Input key={ "flashWindow" + item.state } name="handleFlashWindow" ref={ "flashWindow" + item.state } type="radio" label={ item.label } value={ item.state } onChange={ boundClick }
-            checked={ that.state.notifications.flashWindow == item.state ? "checked" : "" } />
+          <Input key={ 'flashWindow' + item.state } name='handleFlashWindow' ref={ 'flashWindow' + item.state } type='radio' label={ item.label } value={ item.state } onChange={ boundClick }
+            checked={ that.state.notifications.flashWindow == item.state ? 'checked' : '' }
+          />
           );
       });
 
       notifications_row = (
-        <Row id="notificationsRow">
+        <Row id='notificationsRow'>
           <Col md={ 12 }>
           <h3>Notifications</h3> Flash the taskbar icon when a new message is received.
           { notificationElements }
@@ -254,14 +262,14 @@ var SettingsPage = React.createClass({
     }
 
     return (
-      <Grid className="settingsPage">
+      <Grid className='settingsPage'>
         <Row>
           <Col xs={ 4 } sm={ 2 } md={ 2 } lg={ 1 }>
           <h2>Teams</h2>
           </Col>
           <Col xs={ 8 } sm={ 10 } md={ 10 } lg={ 11 }>
-          <Button bsSize="small" style={ { marginTop: 20 } } onClick={ this.toggleShowTeamForm }>
-            <Glyphicon glyph="plus" />
+          <Button bsSize='small' style={ { marginTop: 20 } } onClick={ this.toggleShowTeamForm }>
+            <Glyphicon glyph='plus'/>
           </Button>
           </Col>
         </Row>
@@ -269,13 +277,13 @@ var SettingsPage = React.createClass({
         { options_row }
         { notifications_row }
         <div>
-          <hr />
+          <hr/>
         </div>
         <Row>
           <Col md={ 12 }>
-          <Button id="btnCancel" onClick={ this.handleCancel }>Cancel</Button>
+          <Button id='btnCancel' onClick={ this.handleCancel }>Cancel</Button>
           { ' ' }
-          <Button id="btnSave" bsStyle="primary" onClick={ this.handleSave } disabled={ this.state.teams.length === 0 }>Save</Button>
+          <Button id='btnSave' bsStyle='primary' onClick={ this.handleSave } disabled={ this.state.teams.length === 0 }>Save</Button>
           </Col>
         </Row>
       </Grid>
@@ -284,7 +292,7 @@ var SettingsPage = React.createClass({
 });
 
 var TeamList = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return {
       showTeamListItemNew: false,
       team: {
@@ -294,13 +302,13 @@ var TeamList = React.createClass({
       }
     };
   },
-  handleTeamRemove: function(index) {
+  handleTeamRemove(index) {
     console.log(index);
     var teams = this.props.teams;
     teams.splice(index, 1);
     this.props.onTeamsChange(teams);
   },
-  handleTeamAdd: function(team) {
+  handleTeamAdd(team) {
     var teams = this.props.teams;
 
     // check if team already exists and then change existing team or add new one
@@ -322,7 +330,7 @@ var TeamList = React.createClass({
 
     this.props.onTeamsChange(teams);
   },
-  handleTeamEditing: function(teamName, teamUrl, teamIndex) {
+  handleTeamEditing(teamName, teamUrl, teamIndex) {
     this.setState({
       showTeamListItemNew: true,
       team: {
@@ -332,7 +340,7 @@ var TeamList = React.createClass({
       }
     })
   },
-  render: function() {
+  render() {
     var thisObj = this;
     var teamNodes = this.props.teams.map(function(team, i) {
       var handleTeamRemove = function() {
@@ -344,21 +352,19 @@ var TeamList = React.createClass({
       };
 
       return (
-        <TeamListItem index={ i } key={ "teamListItem" + i } name={ team.name } url={ team.url } onTeamRemove={ handleTeamRemove } onTeamEditing={ handleTeamEditing }
-        />
+        <TeamListItem index={ i } key={ 'teamListItem' + i } name={ team.name } url={ team.url } onTeamRemove={ handleTeamRemove } onTeamEditing={ handleTeamEditing }/>
         );
     });
 
     var addTeamForm;
     if (this.props.showAddTeamForm || this.state.showTeamListItemNew) {
-      addTeamForm = <TeamListItemNew key={ this.state.team.index } onTeamAdd={ this.handleTeamAdd } teamIndex={ this.state.team.index } teamName={ this.state.team.name } teamUrl={ this.state.team.url }
-                    />;
+      addTeamForm = <TeamListItemNew key={ this.state.team.index } onTeamAdd={ this.handleTeamAdd } teamIndex={ this.state.team.index } teamName={ this.state.team.name } teamUrl={ this.state.team.url }/>;
     } else {
       addTeamForm = '';
     }
 
     return (
-      <ListGroup class="teamList">
+      <ListGroup class='teamList'>
         { teamNodes }
         { addTeamForm }
       </ListGroup>
@@ -367,33 +373,33 @@ var TeamList = React.createClass({
 });
 
 var TeamListItem = React.createClass({
-  handleTeamRemove: function() {
+  handleTeamRemove() {
     this.props.onTeamRemove();
   },
-  handleTeamEditing: function() {
+  handleTeamEditing() {
     this.props.onTeamEditing();
   },
-  render: function() {
+  render() {
     var style = {
       left: {
-        "display": 'inline-block'
+        'display': 'inline-block'
       }
     };
     return (
-      <div className="teamListItem list-group-item">
+      <div className='teamListItem list-group-item'>
         <div style={ style.left }>
-          <h4 className="list-group-item-heading">{ this.props.name }</h4>
-          <p className="list-group-item-text">
+          <h4 className='list-group-item-heading'>{ this.props.name }</h4>
+          <p className='list-group-item-text'>
             { this.props.url }
           </p>
         </div>
-        <div className="pull-right">
-          <Button bsSize="xsmall" onClick={ this.handleTeamEditing }>
-            <Glyphicon glyph="pencil" />
+        <div className='pull-right'>
+          <Button bsSize='xsmall' onClick={ this.handleTeamEditing }>
+            <Glyphicon glyph='pencil'/>
           </Button>
           { ' ' }
-          <Button bsSize="xsmall" onClick={ this.handleTeamRemove }>
-            <Glyphicon glyph="remove" />
+          <Button bsSize='xsmall' onClick={ this.handleTeamRemove }>
+            <Glyphicon glyph='remove'/>
           </Button>
         </div>
       </div>
@@ -402,20 +408,20 @@ var TeamListItem = React.createClass({
 });
 
 var TeamListItemNew = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return {
       name: this.props.teamName,
       url: this.props.teamUrl,
       index: this.props.teamIndex
     };
   },
-  handleSubmit: function(e) {
+  handleSubmit(e) {
     console.log('submit');
     e.preventDefault();
     this.props.onTeamAdd({
       name: this.state.name.trim(),
       url: this.state.url.trim(),
-      index: this.state.index,
+      index: this.state.index
     });
 
     this.setState({
@@ -424,24 +430,23 @@ var TeamListItemNew = React.createClass({
       index: ''
     });
   },
-  handleNameChange: function(e) {
+  handleNameChange(e) {
     console.log('name');
     this.setState({
       name: e.target.value
     });
   },
-  handleURLChange: function(e) {
+  handleURLChange(e) {
     console.log('url');
     this.setState({
       url: e.target.value
     });
   },
-  shouldEnableAddButton: function() {
+  shouldEnableAddButton() {
     return (this.state.name.trim() !== '' || this.props.teamName !== '')
       && (this.state.url.trim() !== '' || this.props.teamUrl !== '');
   },
-  render: function() {
-
+  render() {
     var existingTeam = false;
     if (this.state.name !== '' && this.state.url !== '') {
       existingTeam = true;
@@ -456,20 +461,20 @@ var TeamListItemNew = React.createClass({
 
     return (
       <ListGroupItem>
-        <form className="form-inline" onSubmit={ this.handleSubmit }>
-          <div className="form-group">
-            <label for="inputTeamName">Name</label>
+        <form className='form-inline' onSubmit={ this.handleSubmit }>
+          <div className='form-group'>
+            <label htmlFor='inputTeamName'>Name</label>
             { ' ' }
-            <input type="text" className="form-control" id="inputTeamName" placeholder="Example team" value={ this.state.name } onChange={ this.handleNameChange } />
+            <input type='text' className='form-control' id='inputTeamName' placeholder='Example team' value={ this.state.name } onChange={ this.handleNameChange }/>
           </div>
           { ' ' }
-          <div className="form-group">
-            <label for="inputTeamURL">URL</label>
+          <div className='form-group'>
+            <label htmlFor='inputTeamURL'>URL</label>
             { ' ' }
-            <input type="url" className="form-control" id="inputTeamURL" placeholder="https://example.com/team" value={ this.state.url } onChange={ this.handleURLChange } />
+            <input type='url' className='form-control' id='inputTeamURL' placeholder='https://example.com/team' value={ this.state.url } onChange={ this.handleURLChange }/>
           </div>
           { ' ' }
-          <Button type="submit" disabled={ !this.shouldEnableAddButton() }>
+          <Button type='submit' disabled={ !this.shouldEnableAddButton() }>
             { btnAddText }
           </Button>
         </form>
@@ -487,6 +492,6 @@ window.addEventListener('contextmenu', function(e) {
 }, false);
 
 ReactDOM.render(
-  <SettingsPage configFile={ configFile } />,
+  <SettingsPage configFile={ configFile }/>,
   document.getElementById('content')
 );

@@ -1,7 +1,7 @@
 'use strict';
 
 window.eval = global.eval = function() {
-  throw new Error("Sorry, Mattermost does not support window.eval() for security reasons.");
+  throw new Error('Sorry, Mattermost does not support window.eval() for security reasons.');
 }
 
 const React = require('react');
@@ -19,7 +19,7 @@ const ListGroupItem = ReactBootstrap.ListGroupItem;
 
 const LoginModal = require('./components/loginModal.jsx');
 
-const {remote, ipcRenderer, webFrame, shell} = require('electron');
+const { remote, ipcRenderer, webFrame, shell } = require('electron');
 
 const osLocale = require('os-locale');
 const fs = require('fs');
@@ -31,7 +31,7 @@ const settings = require('../common/settings');
 remote.getCurrentWindow().removeAllListeners('focus');
 
 var MainPage = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return {
       key: 0,
       unreadCounts: new Array(this.props.teams.length),
@@ -41,7 +41,7 @@ var MainPage = React.createClass({
       loginQueue: []
     };
   },
-  componentDidMount: function() {
+  componentDidMount() {
     var thisObj = this;
     ipcRenderer.on('login-request', function(event, request, authInfo) {
       thisObj.setState({
@@ -49,13 +49,14 @@ var MainPage = React.createClass({
       });
       const loginQueue = thisObj.state.loginQueue;
       loginQueue.push({
-        request: request,
-        authInfo: authInfo
+        request,
+        authInfo
       });
       thisObj.setState({
-        loginQueue: loginQueue
+        loginQueue
       });
     });
+
     // can't switch tabs sequencially for some reason...
     ipcRenderer.on('switch-tab', (event, key) => {
       this.handleSelect(key);
@@ -77,7 +78,7 @@ var MainPage = React.createClass({
 
     // activate search box in current tab
     ipcRenderer.on('activate-search-box', (event) => {
-      let webview = document.getElementById('mattermostView' + thisObj.state.key);
+      const webview = document.getElementById('mattermostView' + thisObj.state.key);
       webview.send('activate-search-box');
     });
 
@@ -94,7 +95,7 @@ var MainPage = React.createClass({
       currentWindow.removeListener('focus', focusListener);
     });
   },
-  handleSelect: function(key) {
+  handleSelect(key) {
     const newKey = (this.props.teams.length + key) % this.props.teams.length;
     this.setState({
       key: newKey
@@ -106,13 +107,14 @@ var MainPage = React.createClass({
       title: webview.getTitle()
     });
   },
-  handleUnreadCountChange: function(index, unreadCount, mentionCount, isUnread, isMentioned) {
+  handleUnreadCountChange(index, unreadCount, mentionCount, isUnread, isMentioned) {
     var unreadCounts = this.state.unreadCounts;
     var mentionCounts = this.state.mentionCounts;
     var unreadAtActive = this.state.unreadAtActive;
     var mentionAtActiveCounts = this.state.mentionAtActiveCounts;
     unreadCounts[index] = unreadCount;
     mentionCounts[index] = mentionCount;
+
     // Never turn on the unreadAtActive flag at current focused tab.
     if (this.state.key !== index || !remote.getCurrentWindow().isFocused()) {
       unreadAtActive[index] = unreadAtActive[index] || isUnread;
@@ -121,25 +123,25 @@ var MainPage = React.createClass({
       }
     }
     this.setState({
-      unreadCounts: unreadCounts,
-      mentionCounts: mentionCounts,
-      unreadAtActive: unreadAtActive,
-      mentionAtActiveCounts: mentionAtActiveCounts
+      unreadCounts,
+      mentionCounts,
+      unreadAtActive,
+      mentionAtActiveCounts
     });
     this.handleUnreadCountTotalChange();
   },
-  markReadAtActive: function(index) {
+  markReadAtActive(index) {
     var unreadAtActive = this.state.unreadAtActive;
     var mentionAtActiveCounts = this.state.mentionAtActiveCounts;
     unreadAtActive[index] = false;
     mentionAtActiveCounts[index] = 0;
     this.setState({
-      unreadAtActive: unreadAtActive,
-      mentionAtActiveCounts: mentionAtActiveCounts
+      unreadAtActive,
+      mentionAtActiveCounts
     });
     this.handleUnreadCountTotalChange();
   },
-  handleUnreadCountTotalChange: function() {
+  handleUnreadCountTotalChange() {
     if (this.props.onUnreadCountChange) {
       var allUnreadCount = this.state.unreadCounts.reduce(function(prev, curr) {
         return prev + curr;
@@ -158,12 +160,12 @@ var MainPage = React.createClass({
       this.props.onUnreadCountChange(allUnreadCount, allMentionCount);
     }
   },
-  handleOnTeamFocused: function(index) {
+  handleOnTeamFocused(index) {
     // Turn off the flag to indicate whether unread message of active channel contains at current tab.
     this.markReadAtActive(index);
   },
 
-  visibleStyle: function(visible) {
+  visibleStyle(visible) {
     var visibility = visible ? 'visible' : 'hidden';
     return {
       position: 'absolute',
@@ -171,30 +173,31 @@ var MainPage = React.createClass({
       right: 0,
       bottom: 0,
       left: 0,
-      visibility: visibility
+      visibility
     };
   },
 
-  handleLogin: function(request, username, password) {
+  handleLogin(request, username, password) {
     ipcRenderer.send('login-credentials', request, username, password);
     const loginQueue = this.state.loginQueue;
     loginQueue.shift();
     this.setState(loginQueue);
   },
-  handleLoginCancel: function() {
+  handleLoginCancel() {
     const loginQueue = this.state.loginQueue;
     loginQueue.shift();
     this.setState(loginQueue);
   },
-  render: function() {
+  render() {
     var thisObj = this;
 
     var tabs_row;
     if (this.props.teams.length > 1) {
       tabs_row = (
         <Row>
-          <TabBar id="tabBar" teams={ this.props.teams } unreadCounts={ this.state.unreadCounts } mentionCounts={ this.state.mentionCounts } unreadAtActive={ this.state.unreadAtActive } mentionAtActiveCounts={ this.state.mentionAtActiveCounts }
-            activeKey={ this.state.key } onSelect={ this.handleSelect }></TabBar>
+          <TabBar id='tabBar' teams={ this.props.teams } unreadCounts={ this.state.unreadCounts } mentionCounts={ this.state.mentionCounts } unreadAtActive={ this.state.unreadAtActive } mentionAtActiveCounts={ this.state.mentionAtActiveCounts }
+            activeKey={ this.state.key } onSelect={ this.handleSelect }
+          />
         </Row>
       );
     }
@@ -209,7 +212,8 @@ var MainPage = React.createClass({
       var id = 'mattermostView' + index;
       var is_active = thisObj.state.key === index;
       return (<MattermostView key={ id } id={ id } style={ thisObj.visibleStyle(is_active) } src={ team.url } name={ team.name } onUnreadCountChange={ handleUnreadCountChange }
-                onNotificationClick={ handleNotificationClick } ref={ id } active={ is_active } />)
+        onNotificationClick={ handleNotificationClick } ref={ id } active={ is_active }
+              />)
     });
     var views_row = (<Row>
                        { views }
@@ -227,8 +231,9 @@ var MainPage = React.createClass({
     return (
       <div>
         <LoginModal show={ this.state.loginQueue.length !== 0 } request={ request } authInfo={ authInfo } authServerURL={ authServerURL } onLogin={ this.handleLogin }
-          onCancel={ this.handleLoginCancel }></LoginModal>
-        <Grid fluid>
+          onCancel={ this.handleLoginCancel }
+        />
+        <Grid fluid={ true }>
           { tabs_row }
           { views_row }
         </Grid>
@@ -238,7 +243,7 @@ var MainPage = React.createClass({
 });
 
 var TabBar = React.createClass({
-  render: function() {
+  render() {
     var thisObj = this;
     var tabs = this.props.teams.map(function(team, index) {
       var unreadCount = 0;
@@ -252,7 +257,7 @@ var TabBar = React.createClass({
         lineHeight: '20px',
         height: '19px',
         marginLeft: '5px',
-        borderRadius: '50%',
+        borderRadius: '50%'
       };
 
       if (thisObj.props.unreadCounts[index] > 0) {
@@ -278,14 +283,14 @@ var TabBar = React.createClass({
       }
       if (unreadCount == 0) {
         var id = 'teamTabItem' + index;
-        return (<NavItem className="teamTabItem" key={ id } id={ id } eventKey={ index }>
+        return (<NavItem className='teamTabItem' key={ id } id={ id } eventKey={ index }>
                   { team.name }
                   { ' ' }
                   { badge }
                 </NavItem>);
       } else {
         var id = 'teamTabItem' + index;
-        return (<NavItem className="teamTabItem" key={ id } id={ id } eventKey={ index }>
+        return (<NavItem className='teamTabItem' key={ id } id={ id } eventKey={ index }>
                   <b>{ team.name }</b>
                   { ' ' }
                   { badge }
@@ -293,7 +298,7 @@ var TabBar = React.createClass({
       }
     });
     return (
-      <Nav id={ this.props.id } bsStyle="tabs" activeKey={ this.props.activeKey } onSelect={ this.props.onSelect }>
+      <Nav id={ this.props.id } bsStyle='tabs' activeKey={ this.props.activeKey } onSelect={ this.props.onSelect }>
         { tabs }
       </Nav>
       );
@@ -301,18 +306,18 @@ var TabBar = React.createClass({
 });
 
 var MattermostView = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return {
       errorInfo: null
     };
   },
-  handleUnreadCountChange: function(unreadCount, mentionCount, isUnread, isMentioned) {
+  handleUnreadCountChange(unreadCount, mentionCount, isUnread, isMentioned) {
     if (this.props.onUnreadCountChange) {
       this.props.onUnreadCountChange(unreadCount, mentionCount, isUnread, isMentioned);
     }
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     var thisObj = this;
     var webview = ReactDOM.findDOMNode(this.refs.webview);
 
@@ -360,14 +365,14 @@ var MattermostView = React.createClass({
       }
     });
 
-    webview.addEventListener("did-start-loading", function() {
+    webview.addEventListener('did-start-loading', function() {
       if (!webview.cacheInvalidated) {
         webview.reloadIgnoringCache();
         webview.cacheInvalidated = true;
       }
     });
 
-    webview.addEventListener("dom-ready", function() {
+    webview.addEventListener('dom-ready', function() {
       // webview.openDevTools();
 
       // In order to apply the zoom level to webview.
@@ -402,6 +407,7 @@ var MattermostView = React.createClass({
         case 'onUnreadCountChange':
           var unreadCount = event.args[0];
           var mentionCount = event.args[1];
+
           // isUnread and isMentioned is pulse flag.
           var isUnread = event.args[2];
           var isMentioned = event.args[3];
@@ -439,7 +445,7 @@ var MattermostView = React.createClass({
       }
     });
   },
-  reload: function() {
+  reload() {
     this.setState({
       errorInfo: null
     });
@@ -455,8 +461,9 @@ var MattermostView = React.createClass({
       webContents.reload();
     });
   },
-  render: function() {
-    const errorView = this.state.errorInfo ? (<ErrorView id={ this.props.id + '-fail' } style={ this.props.style } className="errorView" errorInfo={ this.state.errorInfo }></ErrorView>) : null;
+  render() {
+    const errorView = this.state.errorInfo ? (<ErrorView id={ this.props.id + '-fail' } style={ this.props.style } className='errorView' errorInfo={ this.state.errorInfo }/>) : null;
+
     // 'disablewebsecurity' is necessary to display external images.
     // However, it allows also CSS/JavaScript.
     // So webview should use 'allowDisplayingInsecureContent' as same as BrowserWindow.
@@ -464,7 +471,7 @@ var MattermostView = React.createClass({
     // Need to keep webview mounted when failed to load.
     return (<div>
               { errorView }
-              <webview id={ this.props.id } className="mattermostView" style={ this.props.style } preload="webview/mattermost.js" src={ this.props.src } ref="webview" nodeintegration="false"></webview>
+              <webview id={ this.props.id } className='mattermostView' style={ this.props.style } preload='webview/mattermost.js' src={ this.props.src } ref='webview' nodeintegration='false'/>
             </div>);
   }
 });
@@ -472,7 +479,7 @@ var MattermostView = React.createClass({
 // ErrorCode: https://code.google.com/p/chromium/codesearch#chromium/src/net/base/net_error_list.h
 // FIXME: need better wording in English
 var ErrorView = React.createClass({
-  render: function() {
+  render() {
     return (
       <Grid id={ this.props.id } style={ this.props.style }>
         <h1>Failed to load the URL</h1>
@@ -522,9 +529,9 @@ var showUnreadBadgeWindows = function(unreadCount, mentionCount) {
     // https://github.com/atom/electron/issues/4011
     ipcRenderer.send('update-unread', {
       overlayDataURL: dataURL,
-      description: description,
-      unreadCount: unreadCount,
-      mentionCount: mentionCount
+      description,
+      unreadCount,
+      mentionCount
     });
   };
 
@@ -549,8 +556,8 @@ var showUnreadBadgeOSX = function(unreadCount, mentionCount) {
   }
 
   ipcRenderer.send('update-unread', {
-    unreadCount: unreadCount,
-    mentionCount: mentionCount
+    unreadCount,
+    mentionCount
   });
 }
 
@@ -560,8 +567,8 @@ var showUnreadBadgeLinux = function(unreadCount, mentionCount) {
   }
 
   ipcRenderer.send('update-unread', {
-    unreadCount: unreadCount,
-    mentionCount: mentionCount
+    unreadCount,
+    mentionCount
   });
 }
 
@@ -597,6 +604,6 @@ ipcRenderer.on('zoom-reset', (event) => {
 });
 
 ReactDOM.render(
-  <MainPage teams={ config.teams } onUnreadCountChange={ showUnreadBadge } />,
+  <MainPage teams={ config.teams } onUnreadCountChange={ showUnreadBadge }/>,
   document.getElementById('content')
 );

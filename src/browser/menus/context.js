@@ -22,5 +22,5 @@ var createDefault = function() {
 };
 
 module.exports = {
-  createDefault: createDefault
+  createDefault
 };

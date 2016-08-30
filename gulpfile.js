@@ -32,7 +32,7 @@ var prettify_options = {
   },
   js: {
     indent_size: 2,
-    brace_style: "end-expand",
+    brace_style: 'end-expand',
     end_with_newline: true
   }
 };
@@ -60,7 +60,6 @@ gulp.task('prettify:sources:verify', function() {
     }));
 });
 
-
 var esformatter_jsx_options = {
   indent: {
     value: '  '
@@ -78,14 +77,13 @@ gulp.task('prettify:jsx:verify', function() {
   return gulp.src('src/browser/**/*.jsx')
     .pipe(through.obj(function(file, enc, cb) {
       var result = esformatter_origin.diff.unified(file.contents.toString(), esformatter_origin.rc(file.path, esformatter_jsx_options));
-      if (result !== "") {
+      if (result !== '') {
         console.log('Error: ' + file.path + ' must be formatted');
         process.exit(1);
       }
       cb();
     }));
 });
-
 
 gulp.task('build', ['sync-meta', 'webpack', 'copy'], function(cb) {
   const appPackageJson = require('./src/package.json');
@@ -199,15 +197,15 @@ function makePackage(platform, arch, callback) {
   var packageJson = require('./src/package.json');
   packager({
     dir: './dist',
-    platform: platform,
-    arch: arch,
+    platform,
+    arch,
     version: require('./package.json').devDependencies['electron-prebuilt'],
     out: './release',
     prune: true,
     overwrite: true,
-    "app-version": packageJson.version,
+    'app-version': packageJson.version,
     icon: 'resources/icon',
-    "version-string": {
+    'version-string': {
       CompanyName: distPackageAuthor,
       LegalCopyright: `Copyright (c) 2015 - ${new Date().getFullYear()} ${packageJson.author.name}`,
       FileDescription: packageJson.productName,
